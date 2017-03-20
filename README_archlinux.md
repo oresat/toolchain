@@ -26,8 +26,8 @@ pacman -S openocd
 ## For cross compiling from a Linux x86 architecture
 
 ```
-pacman -S arm-none-eabi-gcc 6.3.0-1
-pacman -S arm-none-eabi-gdb 7.12.1-1
+pacman -S arm-none-eabi-gcc
+pacman -S arm-none-eabi-gdb
 ```
 
 ## You will need at least one serial terminal program
