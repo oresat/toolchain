@@ -6,12 +6,12 @@
 
 ### vim
 ```
-sudo pacman -S vim
+pacman -S vim
 ```
 
 ### emacs
 ```
-sudo pacman -S emacs
+pacman -S emacs
 ```
 
 ### *Or* Insert your very favorite text editor program install method here
