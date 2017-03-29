@@ -1,0 +1,79 @@
+# Expects the following mandatory variables to be defined before including:
+# - path: Path to this ninja file
+# - binary: Name of the file produced by your project
+# - objects: List of *.o files to link together to produce $binary
+# - stacksize: Amount of stack to allocate on the microcontroller
+# - heapsize: Amount of heap to allocate on the microcontroller
+# - linkmem: Name of the linker script that specifies the memory layout of the microcontroller
+# - boardcfg: Name of the openocd board config file for the microcontroller
+#
+# Additionally allows the following optional variables (that emulate make) to be defined:
+# - cflags: Additional flags passed to the compilation stage
+# - cppflags: Additional flags passed to the preprocessor
+# - ldflags: Additional flags passed to the linker, excluding libraries
+# - ldlibs: Flags for libraries to be linked in
+# - arch: Additional flags specifying microcontroller architecture specific config
+#
+# After the definition of these variables, include this ninja file:
+#   include $path/toolchain.ninja
+#
+# Provides the following rule:
+# - compile: Produces a .o file from a .c or .s file
+#
+# Provides the following targets:
+# - $binary: Produces the final linked binary of the project
+# - write: Flashes $binary to a microcontroller using openocd
+#
+# The target $binary is set to default.
+
+_linker = $path/toolchain/gcc_arm.ld
+_layout = $path/toolchain/$linkmem
+_ocdcfg = $path/toolchain/$boardcfg
+_starts = $path/toolchain/startup.S
+
+_CC = arm-none-eabi-gcc -fdiagnostics-color=always
+_oopts = -Og
+#-fno-omit-frame-pointer -fno-common -ftrapv
+_dopts = -ggdb3 -Og -fno-strict-aliasing
+_wopts = $
+  -Wall $
+  -Wextra $
+  -Wstrict-prototypes $
+  -Wmissing-prototypes $
+  -Wshadow $
+  -Wformat=2 $
+  -Winit-self $
+  -Wmissing-include-dirs $
+  -Wswitch-enum $
+  -Wconversion $
+
+_cflags = -std=gnu11 $_wopts $_dopts $_oopts
+_cppflags = 
+_ldflags = $_dbgopts -Wl,--gc-sections -T$_layout -T$_linker
+_ldlibs = 
+_arch = -mthumb -mcpu=cortex-m0 -ffreestanding --specs=rdimon.specs --specs=nano.specs
+
+rule compile
+  depfile = $out.d
+  deps = gcc
+  command = $_CC -MMD -MF $out.d $_arch $arch $_cppflags $cppflags $_cflags $cflags -c $in -o $out
+
+rule _link
+  command = $_CC $_arch $arch $_ldflags $ldflags $in $_ldlibs $ldlibs -o $out
+
+rule _openocd
+  command = openocd -f $_ocdcfg -c "program $in verify reset exit"
+
+build $binary: _link $
+  $objects $
+  startup.o $
+  | $
+  $_linker $
+  $_layout $
+
+build startup.o: compile $_starts
+  cppflags = -D__STACK_SIZE=$stacksize -D__HEAP_SIZE=$heapsize
+
+build write: _openocd main | $_ocdcfg
+
+default $binary

@@ -9,7 +9,7 @@
  */
 
 int main(void) {
-	while(1) {
-		printf("Hello world\n");
+	for(unsigned i = 0;; ++i) {
+		printf("Hello world %d\n", i);
 	}
 }

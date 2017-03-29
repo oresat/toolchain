@@ -1,0 +1,15 @@
+
+path = ..
+
+binary = main
+objects = main.o
+
+stacksize = 0x800
+heapsize = 0x400
+linkmem = STM32F042x6.ld
+boardcfg = nucleo-32.cfg
+
+include $path/toolchain.ninja
+
+build main.o: compile main.c
+
