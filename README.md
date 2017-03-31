@@ -9,7 +9,7 @@ updated in a while, but the current (old) versions should work. To get the bleed
 edge see the "Manually" section below.
 
 ```
-sudo apt install arm-none-eabi-gcc arm-none-eabi-gdb openocd ninja-build
+sudo apt install gcc-arm-none-eabi gdb-arm-none-eabi openocd ninja-build
 ```
 
 </p></details>
