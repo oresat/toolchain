@@ -34,7 +34,7 @@ _starts = $path/toolchain/startup.S
 _CC = arm-none-eabi-gcc -fdiagnostics-color=always
 _oopts = -Og
 #-fno-omit-frame-pointer -fno-common -ftrapv
-_dopts = -ggdb3 -Og -fno-strict-aliasing
+_dopts = -ggdb3 -fno-strict-aliasing
 _wopts = $
   -Wall $
   -Wextra $
@@ -74,6 +74,6 @@ build $binary: _link $
 build startup.o: compile $_starts
   cppflags = -D__STACK_SIZE=$stacksize -D__HEAP_SIZE=$heapsize
 
-build write: _openocd main | $_ocdcfg
+build write: _openocd $binary | $_ocdcfg
 
 default $binary
