@@ -49,7 +49,12 @@ See `hello_world` in the examples directory for the intended use and give it a t
 ```
 ninja
 ninja write
-../../gdb.sh main
+```
+
+From the main directory of this project issue:
+
+```
+./gdb.sh examples/hello_world/main
 ```
 
 Once GDB comes up you should be able to issue the `continue` command (or just `c`) and it will begin printing out the following as fast as it can (which admittedly is pretty slow):
