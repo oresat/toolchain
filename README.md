@@ -44,12 +44,12 @@ This project is intended to be used as a submodule of other projects. `toolchain
   
 `gdb.sh <binary>` will launch gdb with openocd as a debug server targeting the MCU. 
 
-See the examples directory for the intended use and give it a try! It's set up for a Nucleo-32 dev board, so once one is attached via USB: 
+See `hello_world` in the examples directory for the intended use and give it a try! It's set up for a Nucleo-32 dev board, so once one is attached via USB: 
 
 ```
 ninja
 ninja write
-../gdb.sh main
+../../gdb.sh main
 ```
 
 Once GDB comes up you should be able to issue the `continue` command (or just `c`) and it will begin printing out the following as fast as it can (which admittedly is pretty slow):

@@ -1,5 +1,5 @@
 
-path = ..
+path = ../..
 
 binary = main
 objects = main.o
