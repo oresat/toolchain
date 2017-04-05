@@ -2,7 +2,6 @@
 path = ../..
 
 binary = main
-objects = main.o
 
 stacksize = 0x800
 heapsize = 0x400
@@ -12,4 +11,4 @@ boardcfg = nucleo-32.cfg
 include $path/toolchain.ninja
 
 build main.o: compile main.c
-
+build $binary: link main.o startup.o

@@ -1,7 +1,6 @@
 # Expects the following mandatory variables to be defined before including:
 # - path: Path to this ninja file
 # - binary: Name of the file produced by your project
-# - objects: List of *.o files to link together to produce $binary
 # - stacksize: Amount of stack to allocate on the microcontroller
 # - heapsize: Amount of heap to allocate on the microcontroller
 # - linkmem: Name of the linker script that specifies the memory layout of the microcontroller
@@ -19,6 +18,9 @@
 #
 # Provides the following rule:
 # - compile: Produces a .o file from a .c or .s file
+# - link: Produces an ELF from one or more .o files. Any build statement invoking
+#       this rule should include startup.o as an explicit dependency. For completeness
+#       it should also include an implicit dependency on the variables _linker and _layout.
 #
 # Provides the following targets:
 # - $binary: Produces the final linked binary of the project
@@ -58,18 +60,11 @@ rule compile
   deps = gcc
   command = $_CC -MMD -MF $out.d $_arch $arch $_cppflags $cppflags $_cflags $cflags -c $in -o $out
 
-rule _link
+rule link
   command = $_CC $_arch $arch $_ldflags $ldflags $in $_ldlibs $ldlibs -o $out
 
 rule _openocd
   command = openocd -f $_ocdcfg -c "program $in verify reset exit"
-
-build $binary: _link $
-  $objects $
-  startup.o $
-  | $
-  $_linker $
-  $_layout $
 
 build startup.o: compile $_starts
   cppflags = -D__STACK_SIZE=$stacksize -D__HEAP_SIZE=$heapsize
